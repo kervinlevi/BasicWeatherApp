@@ -9,19 +9,37 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import dagger.hilt.android.AndroidEntryPoint
+import dev.kervinlevi.basicweatherapp.domain.location.LocationProvider
 import dev.kervinlevi.basicweatherapp.ui.theme.BasicWeatherAppTheme
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var locationProvider: LocationProvider
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             BasicWeatherAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    var location by remember { mutableStateOf<String?>("") }
+                    LaunchedEffect(Unit) {
+                        location = locationProvider.getLocation()?.city
+                    }
+
                     Greeting(
-                        name = "Android",
+                        name = "$location",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
