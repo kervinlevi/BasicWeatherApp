@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.lottie.compose)
 
     ksp(libs.hilt.compiler)
     ksp(libs.room.compiler)

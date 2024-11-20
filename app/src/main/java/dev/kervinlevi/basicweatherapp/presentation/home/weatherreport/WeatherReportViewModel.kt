@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.kervinlevi.basicweatherapp.domain.authentication.AuthenticationRepository
 import dev.kervinlevi.basicweatherapp.domain.location.LocationProvider
 import dev.kervinlevi.basicweatherapp.domain.model.ApiResponse
 import dev.kervinlevi.basicweatherapp.domain.weather.WeatherRepository
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class WeatherReportViewModel @Inject constructor(
     private val locationProvider: LocationProvider,
-    private val weatherRepository: WeatherRepository
+    private val weatherRepository: WeatherRepository,
+    private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
 
     var weatherReportState = mutableStateOf(WeatherReportState())
@@ -27,6 +29,7 @@ class WeatherReportViewModel @Inject constructor(
     init {
         val locationPermissionGranted = locationProvider.isLocationPermissionGranted()
         weatherReportState.value = weatherReportState.value.copy(
+            isLoggedIn = authenticationRepository.isLoggedIn(),
             requestLocationPermissions = !locationPermissionGranted,
             error = if (!locationPermissionGranted) LocationUnavailable else null
         )
@@ -54,6 +57,10 @@ class WeatherReportViewModel @Inject constructor(
 
             WeatherReportAction.OnPullToRefresh -> {
                 requestLocationAndWeather()
+            }
+
+            WeatherReportAction.LogOut -> {
+                logOut()
             }
         }
     }
@@ -97,5 +104,10 @@ class WeatherReportViewModel @Inject constructor(
                 error = LocationUnavailable
             )
         }
+    }
+
+    private fun logOut() = viewModelScope.launch {
+        authenticationRepository.logOut()
+        weatherReportState.value = weatherReportState.value.copy(isLoggedIn = false)
     }
 }

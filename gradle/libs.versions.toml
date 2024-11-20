@@ -21,6 +21,7 @@ room = "2.6.1"
 securityCrypto = "1.1.0-alpha06"
 mockk = "1.13.13"
 coroutinesTest = "1.9.0"
+lottieCompose = "4.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -54,6 +55,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk"}
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -8,6 +8,7 @@ import dev.kervinlevi.basicweatherapp.domain.model.WeatherReport
  */
 data class WeatherReportState(
     val isLoading: Boolean = false,
+    val isLoggedIn: Boolean? = null,
     val requestLocationPermissions: Boolean = false,
     val showLocationPermissionRationale: Boolean = false,
     val location: Location? = null,
@@ -19,6 +20,8 @@ sealed interface WeatherReportAction {
     object ShowPermissionsRationale: WeatherReportAction
     object PermissionGranted: WeatherReportAction
     object OnPullToRefresh: WeatherReportAction
+
+    object LogOut: WeatherReportAction
 }
 
 sealed interface WeatherReportError {

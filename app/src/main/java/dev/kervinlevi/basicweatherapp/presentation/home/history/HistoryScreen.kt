@@ -107,7 +107,7 @@ fun PastReportCard(
                 Column {
                     Text(
                         text = "${data.location.city}, ${data.location.country}",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -123,7 +123,7 @@ fun PastReportCard(
                     Spacer(modifier = Modifier.height(Spacing.normal))
                     Text(
                         text = data.weatherReport.description.formattedDescription(),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                     )
                     Spacer(modifier = Modifier.height(Spacing.normal))
                     HorizontalDivider(modifier = Modifier.fillMaxWidth(0.75f))
@@ -136,7 +136,7 @@ fun PastReportCard(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = formatTime(data.weatherReport.sunriseTimestamp),
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.titleSmall,
                             )
                             Text(
                                 text = stringResource(R.string.sunrise),
@@ -147,7 +147,7 @@ fun PastReportCard(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = formatTime(data.weatherReport.sunsetTimestamp),
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.titleSmall,
                             )
                             Text(
                                 text = stringResource(R.string.sunset),

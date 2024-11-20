@@ -1,6 +1,7 @@
 package dev.kervinlevi.basicweatherapp.presentation.home.weatherreport
 
 import dev.kervinlevi.basicweatherapp.MainDispatcherRule
+import dev.kervinlevi.basicweatherapp.domain.authentication.AuthenticationRepository
 import dev.kervinlevi.basicweatherapp.domain.location.LocationProvider
 import dev.kervinlevi.basicweatherapp.domain.model.ApiResponse
 import dev.kervinlevi.basicweatherapp.domain.model.WeatherReport
@@ -41,11 +42,15 @@ class WeatherReportViewModelTest {
     @MockK
     lateinit var locationProvider: LocationProvider
 
+    @MockK
+    lateinit var authRepository: AuthenticationRepository
+
     private lateinit var viewModel: WeatherReportViewModel
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
+        every { authRepository.isLoggedIn() } returns false
     }
 
     @After
@@ -61,7 +66,7 @@ class WeatherReportViewModelTest {
             testWeatherReport1
         )
 
-        viewModel = WeatherReportViewModel(locationProvider, weatherRepository)
+        viewModel = WeatherReportViewModel(locationProvider, weatherRepository, authRepository)
 
         coVerify { locationProvider.getLocation() }
         coVerify { weatherRepository.getCurrentWeather(testLocation1) }
@@ -80,7 +85,7 @@ class WeatherReportViewModelTest {
             testWeatherReport1
         )
 
-        viewModel = WeatherReportViewModel(locationProvider, weatherRepository)
+        viewModel = WeatherReportViewModel(locationProvider, weatherRepository, authRepository)
 
         coVerify(exactly = 0) { locationProvider.getLocation() }
         coVerify(exactly = 0) { weatherRepository.getCurrentWeather(testLocation1) }
@@ -99,7 +104,7 @@ class WeatherReportViewModelTest {
             testWeatherReport1
         )
 
-        viewModel = WeatherReportViewModel(locationProvider, weatherRepository)
+        viewModel = WeatherReportViewModel(locationProvider, weatherRepository, authRepository)
         viewModel.weatherReportState.value =
             viewModel.weatherReportState.value.copy(isLoading = true)
         viewModel.onAction(WeatherReportAction.OnPullToRefresh)
@@ -118,7 +123,7 @@ class WeatherReportViewModelTest {
             testWeatherReport1
         )
 
-        viewModel = WeatherReportViewModel(locationProvider, weatherRepository)
+        viewModel = WeatherReportViewModel(locationProvider, weatherRepository, authRepository)
         viewModel.onAction(WeatherReportAction.ShowPermissionsRationale)
 
         val output = viewModel.weatherReportState.value
@@ -134,7 +139,7 @@ class WeatherReportViewModelTest {
             testWeatherReport1
         )
 
-        viewModel = WeatherReportViewModel(locationProvider, weatherRepository)
+        viewModel = WeatherReportViewModel(locationProvider, weatherRepository, authRepository)
         viewModel.onAction(WeatherReportAction.PermissionGranted)
 
         coVerify(exactly = 1) { locationProvider.getLocation() }
@@ -154,7 +159,7 @@ class WeatherReportViewModelTest {
             testWeatherReport1
         )
 
-        viewModel = WeatherReportViewModel(locationProvider, weatherRepository)
+        viewModel = WeatherReportViewModel(locationProvider, weatherRepository, authRepository)
 
         coVerify(exactly = 1) { locationProvider.getLocation() }
         coVerify(exactly = 0) { weatherRepository.getCurrentWeather(any()) }
@@ -173,7 +178,7 @@ class WeatherReportViewModelTest {
             HttpException(Response.error<WeatherReport>(401, "Unauthorized".toResponseBody()))
         )
 
-        viewModel = WeatherReportViewModel(locationProvider, weatherRepository)
+        viewModel = WeatherReportViewModel(locationProvider, weatherRepository, authRepository)
 
         coVerify(exactly = 1) { locationProvider.getLocation() }
         coVerify(exactly = 1) { weatherRepository.getCurrentWeather(testLocation1) }
@@ -192,7 +197,7 @@ class WeatherReportViewModelTest {
             UnknownHostException()
         )
 
-        viewModel = WeatherReportViewModel(locationProvider, weatherRepository)
+        viewModel = WeatherReportViewModel(locationProvider, weatherRepository, authRepository)
 
         coVerify(exactly = 1) { locationProvider.getLocation() }
         coVerify(exactly = 1) { weatherRepository.getCurrentWeather(testLocation1) }
@@ -201,5 +206,22 @@ class WeatherReportViewModelTest {
         assertEquals(testLocation1, output.location)
         assertFalse(output.isLoading)
         assertTrue(output.error is WeatherReportError.NoInternet)
+    }
+
+    @Test
+    fun `Verify state after onAction LogOut`() {
+        every { authRepository.isLoggedIn() } returns true
+        every { locationProvider.isLocationPermissionGranted() } returns true
+        coEvery { locationProvider.getLocation() } returns testLocation1
+        coEvery { weatherRepository.getCurrentWeather(any()) } returns ApiResponse.Success(
+            testWeatherReport1
+        )
+
+        viewModel = WeatherReportViewModel(locationProvider, weatherRepository, authRepository)
+        viewModel.onAction(WeatherReportAction.LogOut)
+
+        coVerify { authRepository.logOut() }
+        val output = viewModel.weatherReportState.value
+        assertEquals(false, output.isLoggedIn)
     }
 }

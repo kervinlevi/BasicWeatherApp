@@ -19,3 +19,17 @@ fun WeatherCondition.toSmallIconResource(): Int {
         else -> R.drawable.ic_unknown
     }
 }
+
+fun WeatherCondition?.toLottieAsset(): String {
+    return when (this) {
+        WeatherCondition.DAY_CLEAR_SKY -> "animations/day-clear-sky.json"
+        WeatherCondition.DAY_CLOUDY -> "animations/day-cloudy.json"
+        WeatherCondition.DAY_RAIN -> "animations/day-rain.json"
+        WeatherCondition.DAY_SNOW -> "animations/day-snow.json"
+        WeatherCondition.NIGHT_CLEAR_SKY -> "animations/night-clear-sky.json"
+        WeatherCondition.NIGHT_CLOUDY -> "animations/night-cloudy.json"
+        WeatherCondition.NIGHT_RAIN -> "animations/night-rain.json"
+        WeatherCondition.NIGHT_SNOW -> "animations/night-snow.json"
+        else -> "animations/unknown.json"
+    }
+}
