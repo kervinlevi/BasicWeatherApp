@@ -14,14 +14,15 @@ import dev.kervinlevi.basicweatherapp.domain.weather.WeatherRepository
  */
 class WeatherRepositoryImpl(
     private val weatherApi: WeatherApi,
-    private val pastWeatherDao: PastWeatherDao
+    private val pastWeatherDao: PastWeatherDao,
+    private val weatherApiAppIdProvider: WeatherApiAppIdProvider
 ) : WeatherRepository {
 
     override suspend fun getCurrentWeather(location: Location): WeatherReport {
         val remoteData = weatherApi.getWeather(
             latitude = location.latitude.toString(),
             longitude = location.longitude.toString(),
-            key = ""
+            key = weatherApiAppIdProvider.appId()
         )
         val weatherReport = remoteData.toDomainModel()
         val pastWeather = (location to weatherReport).toPastWeatherEntity()

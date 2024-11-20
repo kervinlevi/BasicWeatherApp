@@ -1,10 +1,8 @@
 package dev.kervinlevi.basicweatherapp.data.mapper
 
-import androidx.room.ColumnInfo
 import dev.kervinlevi.basicweatherapp.data.db.PastWeatherEntity
 import dev.kervinlevi.basicweatherapp.domain.model.Location
 import dev.kervinlevi.basicweatherapp.domain.model.PastWeatherReport
-import dev.kervinlevi.basicweatherapp.domain.model.WeatherCondition
 import dev.kervinlevi.basicweatherapp.domain.model.WeatherReport
 
 /**

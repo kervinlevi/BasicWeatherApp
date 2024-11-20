@@ -16,6 +16,7 @@ import dev.kervinlevi.basicweatherapp.data.db.PastWeatherDao
 import dev.kervinlevi.basicweatherapp.data.db.WeatherDatabase
 import dev.kervinlevi.basicweatherapp.data.location.LocationProviderImpl
 import dev.kervinlevi.basicweatherapp.data.weather.WeatherApi
+import dev.kervinlevi.basicweatherapp.data.weather.WeatherApiAppId
 import dev.kervinlevi.basicweatherapp.data.weather.WeatherRepositoryImpl
 import dev.kervinlevi.basicweatherapp.domain.authentication.AuthenticationRepository
 import dev.kervinlevi.basicweatherapp.domain.location.LocationProvider
@@ -56,7 +57,7 @@ object ApplicationModule {
         weatherApi: WeatherApi,
         pastWeatherDao: PastWeatherDao
     ): WeatherRepository {
-        return WeatherRepositoryImpl(weatherApi, pastWeatherDao)
+        return WeatherRepositoryImpl(weatherApi, pastWeatherDao, WeatherApiAppId)
     }
 
     @Provides
