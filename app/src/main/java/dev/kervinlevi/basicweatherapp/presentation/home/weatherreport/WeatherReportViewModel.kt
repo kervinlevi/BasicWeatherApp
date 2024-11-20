@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.kervinlevi.basicweatherapp.domain.location.LocationProvider
 import dev.kervinlevi.basicweatherapp.domain.model.ApiResponse
 import dev.kervinlevi.basicweatherapp.domain.weather.WeatherRepository
+import dev.kervinlevi.basicweatherapp.presentation.home.weatherreport.WeatherReportError.LocationUnavailable
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -24,8 +25,10 @@ class WeatherReportViewModel @Inject constructor(
         private set
 
     init {
+        val locationPermissionGranted = locationProvider.isLocationPermissionGranted()
         weatherReportState.value = weatherReportState.value.copy(
-            requestLocationPermissions = !locationProvider.isLocationPermissionGranted(),
+            requestLocationPermissions = !locationPermissionGranted,
+            error = if (!locationPermissionGranted) LocationUnavailable else null
         )
         if (locationProvider.isLocationPermissionGranted()) {
             requestLocationAndWeather()
@@ -55,7 +58,7 @@ class WeatherReportViewModel @Inject constructor(
         }
     }
 
-    fun requestLocationAndWeather() = viewModelScope.launch {
+    private fun requestLocationAndWeather() = viewModelScope.launch {
         if (weatherReportState.value.isLoading) return@launch
         weatherReportState.value = weatherReportState.value.copy(isLoading = true)
 
@@ -66,7 +69,8 @@ class WeatherReportViewModel @Inject constructor(
                     weatherReportState.value = weatherReportState.value.copy(
                         isLoading = false,
                         location = location,
-                        weatherReport = apiResponse.data
+                        weatherReport = apiResponse.data,
+                        error = null
                     )
                 }
 
@@ -90,7 +94,7 @@ class WeatherReportViewModel @Inject constructor(
                 isLoading = false,
                 location = null,
                 weatherReport = null,
-                error = WeatherReportError.LocationUnavailable
+                error = LocationUnavailable
             )
         }
     }
