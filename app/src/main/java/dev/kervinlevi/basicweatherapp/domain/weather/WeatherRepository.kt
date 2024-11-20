@@ -1,5 +1,6 @@
 package dev.kervinlevi.basicweatherapp.domain.weather
 
+import dev.kervinlevi.basicweatherapp.domain.model.ApiResponse
 import dev.kervinlevi.basicweatherapp.domain.model.Location
 import dev.kervinlevi.basicweatherapp.domain.model.PastWeatherReport
 import dev.kervinlevi.basicweatherapp.domain.model.WeatherReport
@@ -9,6 +10,6 @@ import dev.kervinlevi.basicweatherapp.domain.model.WeatherReport
  */
 interface WeatherRepository {
 
-    suspend fun getCurrentWeather(location: Location): WeatherReport
+    suspend fun getCurrentWeather(location: Location): ApiResponse<WeatherReport>
     suspend fun getPastReports(): List<PastWeatherReport>
 }

@@ -11,10 +11,18 @@ data class WeatherReportState(
     val requestLocationPermissions: Boolean = false,
     val showLocationPermissionRationale: Boolean = false,
     val location: Location? = null,
-    val weatherReport: WeatherReport? = null
+    val weatherReport: WeatherReport? = null,
+    val error: WeatherReportError? = null
 )
 
 sealed interface WeatherReportAction {
     object ShowPermissionsRationale: WeatherReportAction
     object PermissionGranted: WeatherReportAction
+    object OnPullToRefresh: WeatherReportAction
+}
+
+sealed interface WeatherReportError {
+    object NoInternet: WeatherReportError
+    data class HttpError(val message: String): WeatherReportError
+    object LocationUnavailable: WeatherReportError
 }
