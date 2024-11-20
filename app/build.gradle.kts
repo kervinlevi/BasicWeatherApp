@@ -64,8 +64,18 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.hilt)
+    implementation(libs.hilt.navigation)
     implementation(libs.play.services.location)
+    implementation(libs.accompanist.permissions)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.moshi)
+    implementation(libs.retrofit.logger)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+
     ksp(libs.hilt.compiler)
+    ksp(libs.moshi.codegen)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -84,9 +84,4 @@ class LocationProviderImpl @Inject constructor(private val context: Context) : L
             country = address?.countryName
         )
     }
-
-    companion object {
-        private const val CITY_INDEX = 0
-        private const val COUNTRY_INDEX = 2
-    }
 }
