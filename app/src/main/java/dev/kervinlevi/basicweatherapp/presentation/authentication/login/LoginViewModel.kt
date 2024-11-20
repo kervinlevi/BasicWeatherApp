@@ -75,6 +75,7 @@ class LoginViewModel @Inject constructor(
                 passwordError = validatePassword(currentState.password)
             )
             if (loginState.value.emailError != null || loginState.value.passwordError != null) {
+                loginState.value = loginState.value.copy(isLoggingIn = false)
                 return@launch
             }
 

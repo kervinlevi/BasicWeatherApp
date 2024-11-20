@@ -1,4 +1,4 @@
-package dev.kervinlevi.basicweatherapp.ui.theme
+package dev.kervinlevi.basicweatherapp.presentation.common.ui
 
 import androidx.compose.ui.graphics.Color
 

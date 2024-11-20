@@ -93,6 +93,7 @@ class SignUpViewModel @Inject constructor(
                 signUpState.value.nameError != null ||
                 signUpState.value.passwordError != null
             ) {
+                signUpState.value = signUpState.value.copy(isSigningUp = false)
                 return@launch
             }
 

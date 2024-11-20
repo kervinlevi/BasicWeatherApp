@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">BasicWeatherApp</string>
+    <string name="email_address">Email address</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="registration">Registration</string>
+    <string name="not_registered">Not yet registered? Click here.</string>
+    <string name="invalid_email">Email address is invalid.</string>
+    <string name="empty_email">Email address should not be empty.</string>
+    <string name="empty_name">Name should not be empty.</string>
+    <string name="invalid_password">At least 8 characters, and must have an uppercase letter, a lowercase letter, and a digit</string>
+    <string name="empty_password">Password should not be empty.</string>
+    <string name="back">Back</string>
+    <string name="visibility_toggle">Visibility toggle</string>
+    <string name="name">Name</string>
 </resources>

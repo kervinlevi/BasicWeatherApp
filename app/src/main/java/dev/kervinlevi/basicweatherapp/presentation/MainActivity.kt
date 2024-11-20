@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.kervinlevi.basicweatherapp.presentation.navigation.RootNavigationGraph
-import dev.kervinlevi.basicweatherapp.ui.theme.BasicWeatherAppTheme
+import dev.kervinlevi.basicweatherapp.presentation.common.ui.BasicWeatherAppTheme
 
 
 /**
