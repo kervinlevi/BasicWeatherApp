@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.kervinlevi.basicweatherapp.domain.authentication.AuthenticationRepository
 import dev.kervinlevi.basicweatherapp.domain.model.ApiResponse
+import dev.kervinlevi.basicweatherapp.presentation.authentication.login.LoginViewModel.Companion.EMAIL_REGEX
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,8 +15,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val authorizationRepository: AuthenticationRepository
-): ViewModel() {
+    private val authenticationRepository: AuthenticationRepository
+) : ViewModel() {
     var signUpState = mutableStateOf(SignUpState())
         private set
 
@@ -33,7 +34,7 @@ class SignUpViewModel @Inject constructor(
 
             is SignUpAction.UpdateName -> {
                 signUpState.value = signUpState.value.copy(
-                    name = action.typedName, emailError = validateName(action.typedName)
+                    name = action.typedName, nameError = validateName(action.typedName)
                 )
             }
 
@@ -49,7 +50,7 @@ class SignUpViewModel @Inject constructor(
     private fun validateEmail(typedEmail: String): SignUpFieldError? {
         return if (typedEmail.isEmpty()) {
             SignUpFieldError.EmailEmpty
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(typedEmail).matches()) {
+        } else if (!EMAIL_REGEX.matches(typedEmail)) {
             SignUpFieldError.EmailWrongFormat
         } else {
             null
@@ -67,7 +68,8 @@ class SignUpViewModel @Inject constructor(
     private fun validatePassword(typedPassword: String): SignUpFieldError? {
         return if (typedPassword.isEmpty()) {
             SignUpFieldError.PasswordEmpty
-        } else if (!typedPassword.contains("[0-9]".toRegex()) ||
+        } else if (typedPassword.length < 8 ||
+            !typedPassword.contains("[0-9]".toRegex()) ||
             !typedPassword.contains("[a-z]".toRegex()) ||
             !typedPassword.contains("[A-Z]".toRegex())
         ) {
@@ -89,11 +91,16 @@ class SignUpViewModel @Inject constructor(
             )
             if (signUpState.value.emailError != null ||
                 signUpState.value.nameError != null ||
-                signUpState.value.passwordError != null) {
+                signUpState.value.passwordError != null
+            ) {
                 return@launch
             }
 
-            val result = authorizationRepository.logIn(currentState.email, currentState.password)
+            val result = authenticationRepository.signUp(
+                currentState.email,
+                currentState.name,
+                currentState.password
+            )
             signUpState.value = if (result is ApiResponse.Success) {
                 signUpState.value.copy(isSigningUp = false, hasSignedUp = true)
             } else {

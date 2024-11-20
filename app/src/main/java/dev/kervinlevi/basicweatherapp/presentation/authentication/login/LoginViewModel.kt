@@ -14,7 +14,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authorizationRepository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository
 ) : ViewModel() {
 
     var loginState = mutableStateOf(LoginState())
@@ -44,7 +44,7 @@ class LoginViewModel @Inject constructor(
     private fun validateEmail(typedEmail: String): LoginFieldError? {
         return if (typedEmail.isEmpty()) {
             LoginFieldError.EmailEmpty
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(typedEmail).matches()) {
+        } else if (!EMAIL_REGEX.matches(typedEmail)) {
             LoginFieldError.EmailWrongFormat
         } else {
             null
@@ -54,7 +54,8 @@ class LoginViewModel @Inject constructor(
     private fun validatePassword(typedPassword: String): LoginFieldError? {
         return if (typedPassword.isEmpty()) {
             LoginFieldError.PasswordEmpty
-        } else if (!typedPassword.contains("[0-9]".toRegex()) ||
+        } else if (typedPassword.length < 8 ||
+            !typedPassword.contains("[0-9]".toRegex()) ||
             !typedPassword.contains("[a-z]".toRegex()) ||
             !typedPassword.contains("[A-Z]".toRegex())
         ) {
@@ -77,12 +78,16 @@ class LoginViewModel @Inject constructor(
                 return@launch
             }
 
-            val result = authorizationRepository.logIn(currentState.email, currentState.password)
+            val result = authenticationRepository.logIn(currentState.email, currentState.password)
             loginState.value = if (result is ApiResponse.Success) {
                 loginState.value.copy(isLoggingIn = false, hasLoggedIn = true)
             } else {
                 loginState.value.copy(isLoggingIn = false, hasLoggedIn = false)
             }
         }
+    }
+
+    companion object {
+        val EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9+.-]+\\.[A-Za-z.]+\$".toRegex()
     }
 }
