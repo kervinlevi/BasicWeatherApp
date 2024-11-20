@@ -1,17 +1,23 @@
 package dev.kervinlevi.basicweatherapp.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
+import androidx.security.crypto.MasterKeys
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dev.kervinlevi.basicweatherapp.data.authentication.SimulatedAuthenticationRepositoryImpl
 import dev.kervinlevi.basicweatherapp.data.db.PastWeatherDao
 import dev.kervinlevi.basicweatherapp.data.db.WeatherDatabase
 import dev.kervinlevi.basicweatherapp.data.location.LocationProviderImpl
 import dev.kervinlevi.basicweatherapp.data.weather.WeatherApi
 import dev.kervinlevi.basicweatherapp.data.weather.WeatherRepositoryImpl
+import dev.kervinlevi.basicweatherapp.domain.authentication.AuthenticationRepository
 import dev.kervinlevi.basicweatherapp.domain.location.LocationProvider
 import dev.kervinlevi.basicweatherapp.domain.weather.WeatherRepository
 import okhttp3.OkHttpClient
@@ -61,5 +67,28 @@ object ApplicationModule {
     @Provides
     fun providePastWeatherDao(weatherDatabase: WeatherDatabase): PastWeatherDao {
         return weatherDatabase.pastWeatherDao()
+    }
+
+    @Provides
+    @EncryptedSharedPrefs
+    fun provideEncryptedSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+        val masterKey: MasterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+        val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+            context,
+            "encrypted_shared_prefs",
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+        return sharedPreferences
+    }
+
+    @Provides
+    fun provideAuthenticationRepository(
+        @EncryptedSharedPrefs encryptedSharedPrefs: SharedPreferences
+    ): AuthenticationRepository {
+        return SimulatedAuthenticationRepositoryImpl(encryptedSharedPrefs)
     }
 }

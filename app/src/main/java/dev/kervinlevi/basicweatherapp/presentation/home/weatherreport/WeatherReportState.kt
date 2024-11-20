@@ -14,8 +14,7 @@ data class WeatherReportState(
     val weatherReport: WeatherReport? = null
 )
 
-sealed class WeatherReportAction {
-    object ShowPermissionsRationale: WeatherReportAction()
-    object PermissionGranted: WeatherReportAction()
-
+sealed interface WeatherReportAction {
+    object ShowPermissionsRationale: WeatherReportAction
+    object PermissionGranted: WeatherReportAction
 }
