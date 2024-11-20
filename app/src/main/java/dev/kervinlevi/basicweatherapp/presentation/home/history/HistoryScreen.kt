@@ -1,23 +1,43 @@
 package dev.kervinlevi.basicweatherapp.presentation.home.history
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import dev.kervinlevi.basicweatherapp.domain.model.PastWeatherReport
 
 /**
  * Created by kervinlevi on 20/11/24
  */
 @Composable
 fun HistoryScreen(
-    modifier: Modifier = Modifier
+    state: HistoryState, modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier
-        .fillMaxSize()
-        .background(color = Color.Blue)) {
-        Text(text = "History screen")
+    Box(modifier = modifier.fillMaxSize()) {
+        Text(text = "Past weather reports")
+
+        LazyColumn {
+            items(state.weatherReports) { pastReport ->
+                PastReportCard(data = pastReport, modifier = Modifier)
+            }
+        }
+
+    }
+}
+
+@Composable
+fun PastReportCard(data: PastWeatherReport, modifier: Modifier) {
+    Card(modifier = modifier) {
+        Column {
+            Text(text = "Timestamp: ${data.weatherReport.timestamp}")
+            Text(text = "Location: ${data.location.city}, ${data.location.country}")
+            Text(text = "Description: ${data.weatherReport.description}")
+
+        }
     }
 }

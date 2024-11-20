@@ -13,7 +13,8 @@ import androidx.compose.ui.Modifier
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import dev.kervinlevi.basicweatherapp.presentation.home.weatherreport.WeatherReportAction.*
+import dev.kervinlevi.basicweatherapp.presentation.home.weatherreport.WeatherReportAction.PermissionGranted
+import dev.kervinlevi.basicweatherapp.presentation.home.weatherreport.WeatherReportAction.ShowPermissionsRationale
 
 /**
  * Created by kervinlevi on 19/11/24
@@ -26,7 +27,26 @@ fun WeatherReportScreen(
     navigateToLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val locationPermissionState = rememberMultiplePermissionsState(
+    if (state.requestLocationPermissions) {
+        RequestLocationPermission(onAction)
+    }
+
+    Column(modifier = modifier.fillMaxSize()) {
+        Text(text = "City: ${state.location?.city}, ${state.location?.country}")
+        Text(text = "Weather: ${state.weatherReport?.description}, ${state.weatherReport?.condition}")
+        Text(text = "Temperature: ${state.weatherReport?.temperature} C")
+        Text(text = "Sunrise: ${state.weatherReport?.sunriseTimestamp}")
+        Text(text = "Sunset: ${state.weatherReport?.sunsetTimestamp}")
+        Button(onClick = { navigateToLogin() }) {
+            Text(text = "Log In")
+        }
+    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun RequestLocationPermission(onAction: (WeatherReportAction) -> Unit) {
+    val permissionsState = rememberMultiplePermissionsState(
         permissions = listOf(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
         )
@@ -41,8 +61,10 @@ fun WeatherReportScreen(
             }
         }
 
-    LaunchedEffect(key1 = locationPermissionState) {
-        if (!locationPermissionState.permissions.first().status.isGranted && !locationPermissionState.permissions.last().status.isGranted && locationPermissionState.shouldShowRationale) {
+    LaunchedEffect(key1 = permissionsState) {
+        if (!permissionsState.permissions.first().status.isGranted &&
+            !permissionsState.permissions.last().status.isGranted &&
+            permissionsState.shouldShowRationale) {
             onAction(ShowPermissionsRationale)
         } else {
             requestPermissionLauncher.launch(
@@ -51,17 +73,6 @@ fun WeatherReportScreen(
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 )
             )
-        }
-    }
-
-    Column(modifier = modifier.fillMaxSize()) {
-        Text(text = "City: ${state.location?.city}, ${state.location?.country}")
-        Text(text = "Weather: ${state.weatherReport?.description}, ${state.weatherReport?.condition}")
-        Text(text = "Temperature: ${state.weatherReport?.temperature} C")
-        Text(text = "Sunrise: ${state.weatherReport?.sunriseTimestamp}")
-        Text(text = "Sunset: ${state.weatherReport?.sunsetTimestamp}")
-        Button(onClick = { navigateToLogin() }) {
-            Text(text = "Log In")
         }
     }
 }

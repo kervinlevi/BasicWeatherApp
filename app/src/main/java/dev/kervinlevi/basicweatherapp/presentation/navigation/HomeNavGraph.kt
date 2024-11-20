@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import dev.kervinlevi.basicweatherapp.presentation.home.history.HistoryScreen
+import dev.kervinlevi.basicweatherapp.presentation.home.history.HistoryViewModel
 import dev.kervinlevi.basicweatherapp.presentation.home.weatherreport.WeatherReportScreen
 import dev.kervinlevi.basicweatherapp.presentation.home.weatherreport.WeatherReportViewModel
 
@@ -35,7 +36,8 @@ fun HomeNavGraph(
         }
 
         composable(route = BottomBarNav.History.route) {
-            HistoryScreen()
+            val viewModel: HistoryViewModel = hiltViewModel()
+            HistoryScreen(state = viewModel.historyState.value)
         }
     }
 }

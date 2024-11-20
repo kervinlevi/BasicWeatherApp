@@ -72,8 +72,11 @@ dependencies {
     implementation(libs.retrofit.logger)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
 
     ksp(libs.hilt.compiler)
+    ksp(libs.room.compiler)
     ksp(libs.moshi.codegen)
 
     testImplementation(libs.junit)

@@ -1,11 +1,14 @@
 package dev.kervinlevi.basicweatherapp.di
 
 import android.content.Context
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dev.kervinlevi.basicweatherapp.data.db.PastWeatherDao
+import dev.kervinlevi.basicweatherapp.data.db.WeatherDatabase
 import dev.kervinlevi.basicweatherapp.data.location.LocationProviderImpl
 import dev.kervinlevi.basicweatherapp.data.weather.WeatherApi
 import dev.kervinlevi.basicweatherapp.data.weather.WeatherRepositoryImpl
@@ -15,7 +18,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-
 
 /**
  * Created by kervinlevi on 19/11/24
@@ -44,7 +46,20 @@ object ApplicationModule {
     }
 
     @Provides
-    fun provideWeatherRepository(weatherApi: WeatherApi): WeatherRepository {
-        return WeatherRepositoryImpl(weatherApi)
+    fun provideWeatherRepository(
+        weatherApi: WeatherApi,
+        pastWeatherDao: PastWeatherDao
+    ): WeatherRepository {
+        return WeatherRepositoryImpl(weatherApi, pastWeatherDao)
+    }
+
+    @Provides
+    fun provideWeatherDatabase(@ApplicationContext context: Context): WeatherDatabase {
+        return Room.databaseBuilder(context, WeatherDatabase::class.java, "weather_db").build()
+    }
+
+    @Provides
+    fun providePastWeatherDao(weatherDatabase: WeatherDatabase): PastWeatherDao {
+        return weatherDatabase.pastWeatherDao()
     }
 }
