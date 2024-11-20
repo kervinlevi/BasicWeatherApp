@@ -4,14 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dev.kervinlevi.basicweatherapp.presentation.home.weatherreport.WeatherReportScreen
-import dev.kervinlevi.basicweatherapp.presentation.home.weatherreport.WeatherReportViewModel
+import dev.kervinlevi.basicweatherapp.presentation.navigation.RootNavigationGraph
 import dev.kervinlevi.basicweatherapp.ui.theme.BasicWeatherAppTheme
 
 
@@ -26,15 +21,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BasicWeatherAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-
-                    val viewmodel: WeatherReportViewModel = hiltViewModel()
-                    WeatherReportScreen(
-                        modifier = Modifier.padding(innerPadding),
-                        state = viewmodel.weatherReportState.value,
-                        onAction = viewmodel::onAction
-                    )
-                }
+                RootNavigationGraph(rootNavController = rememberNavController())
             }
         }
     }
