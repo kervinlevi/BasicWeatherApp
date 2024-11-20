@@ -14,13 +14,13 @@ data class SignUpState(
     val hasSignedUp: Boolean = false
 )
 
-sealed interface SignUpStateAction {
-    object SignUp: SignUpStateAction
-    data class UpdateEmail(val typedEmail: String): SignUpStateAction
+sealed interface SignUpAction {
+    object SignUp: SignUpAction
+    data class UpdateEmail(val typedEmail: String): SignUpAction
 
-    data class UpdateName(val typedEmail: String): SignUpStateAction
+    data class UpdateName(val typedName: String): SignUpAction
 
-    data class UpdatePassword(val typedPassword: String): SignUpStateAction
+    data class UpdatePassword(val typedPassword: String): SignUpAction
 }
 
 sealed interface SignUpFieldError {
