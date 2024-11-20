@@ -14,4 +14,8 @@
     <string name="back">Back</string>
     <string name="visibility_toggle">Visibility toggle</string>
     <string name="name">Name</string>
+    <string name="retrieved_on">Retrieved on %s</string>
+    <string name="celsius">%.2f\u2103</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
 </resources>
