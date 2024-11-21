@@ -5,12 +5,12 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import androidx.security.crypto.MasterKeys
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dev.kervinlevi.basicweatherapp.BuildConfig
 import dev.kervinlevi.basicweatherapp.data.authentication.SimulatedAuthenticationRepositoryImpl
 import dev.kervinlevi.basicweatherapp.data.db.PastWeatherDao
 import dev.kervinlevi.basicweatherapp.data.db.WeatherDatabase
@@ -21,8 +21,6 @@ import dev.kervinlevi.basicweatherapp.data.weather.WeatherRepositoryImpl
 import dev.kervinlevi.basicweatherapp.domain.authentication.AuthenticationRepository
 import dev.kervinlevi.basicweatherapp.domain.location.LocationProvider
 import dev.kervinlevi.basicweatherapp.domain.weather.WeatherRepository
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
@@ -41,14 +39,9 @@ object ApplicationModule {
 
     @Provides
     fun provideWeatherApi(): WeatherApi {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-
         return Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/")
+            .baseUrl(BuildConfig.OPEN_WEATHER_URL)
             .addConverterFactory(MoshiConverterFactory.create())
-            .client(client)
             .build().create(WeatherApi::class.java)
     }
 

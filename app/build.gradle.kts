@@ -25,12 +25,16 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "OPEN_WEATHER_URL", "\"https://api.openweathermap.org/\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "OPEN_WEATHER_URL", "\"https://api.openweathermap.org/\"")
         }
     }
     compileOptions {
@@ -47,6 +51,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -75,7 +80,6 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
-    implementation(libs.retrofit.logger)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.room.runtime)
