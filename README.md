@@ -37,8 +37,8 @@ The app has unit tests. The code coverage for each ViewModel is at maximum.
 https://github.com/user-attachments/assets/2d1e6a51-ccc1-4f6a-bb20-085c3578dc0f
 
 ## Screenshots
-<img width="346" alt="Screenshot1" src="https://github.com/user-attachments/assets/dce71a3e-281e-461c-8959-c4e3380ddf86">
-<img width="346" alt="Screenshot2" src="https://github.com/user-attachments/assets/ce8ac2f5-c1c6-4ac3-a244-2121cd9b4ec2">
-<img width="346" alt="Screenshot3" src="https://github.com/user-attachments/assets/2839aa94-fa62-46dd-a75a-90a496c69dad">
-<img width="346" alt="Screenshot4" src="https://github.com/user-attachments/assets/f862edc8-9bd5-420d-937b-73d4ee6465ab">
+<img width="346" alt="Network error" src="https://github.com/user-attachments/assets/dce71a3e-281e-461c-8959-c4e3380ddf86">
+<img width="346" alt="Weather report history tab" src="https://github.com/user-attachments/assets/f862edc8-9bd5-420d-937b-73d4ee6465ab">
+<img width="346" alt="Day rain weather at 11:29PM" src="https://github.com/user-attachments/assets/a775f5ba-3d3b-46e4-a430-6bdaac92bfd5">
+<img width="346" alt="Night rain weather at 6:30PM" src="https://github.com/user-attachments/assets/dc0cf313-4a7a-418a-b000-d5e31e2c3cb1">
 
