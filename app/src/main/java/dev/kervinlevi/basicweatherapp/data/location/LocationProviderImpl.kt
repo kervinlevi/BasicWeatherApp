@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.Address
 import android.location.Geocoder
+import android.location.LocationManager
 import android.os.Build
 import androidx.core.content.ContextCompat.checkSelfPermission
 import com.google.android.gms.location.LocationServices
@@ -23,7 +24,7 @@ import kotlin.coroutines.suspendCoroutine
 class LocationProviderImpl @Inject constructor(private val context: Context) : LocationProvider {
     @SuppressLint("MissingPermission")
     override suspend fun getLocation(): Location? {
-        if (!isLocationPermissionGranted()) {
+        if (!isLocationPermissionGranted() || !isLocationEnabled()) {
             return null
         }
 
@@ -32,7 +33,9 @@ class LocationProviderImpl @Inject constructor(private val context: Context) : L
             with(locationProviderClient.lastLocation) {
                 addOnSuccessListener { fuseLocation ->
                     val geocoder = Geocoder(context, Locale.getDefault())
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (fuseLocation == null) {
+                        coroutine.resume(null)
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         geocoder.getFromLocation(fuseLocation.latitude,
                             fuseLocation.longitude,
                             1,
@@ -72,6 +75,12 @@ class LocationProviderImpl @Inject constructor(private val context: Context) : L
         ) == PERMISSION_GRANTED || checkSelfPermission(
             context, ACCESS_COARSE_LOCATION
         ) == PERMISSION_GRANTED
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
     private fun getLocation(

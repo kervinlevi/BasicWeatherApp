@@ -20,7 +20,9 @@
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
     <string name="no_internet_connection">No Internet connection.</string>
-    <string name="http_error">We encountered an error fetching the weather report.</string>
+    <string name="http_error">Error fetching the weather report.</string>
     <string name="location_error_title">Your location cannot be retrieved.</string>
-    <string name="location_error_button">Check location permissions here.</string>
+    <string name="location_error_description">Make sure the app\'s location permission is granted and the device\'s location services is enabled.</string>
+    <string name="location_error_button">Check app permissions</string>
+    <string name="location_error_settings_button">Check location settings</string>
 </resources>

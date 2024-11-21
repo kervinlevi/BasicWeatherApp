@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.compose.foundation.Canvas
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -180,6 +183,7 @@ fun WeatherReportScreen(
                 Spacer(modifier = Modifier.height(Spacing.normal))
                 Text(
                     text = "${state.location?.city}, ${state.location?.country}",
+                    textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
@@ -228,6 +232,7 @@ fun WeatherReportScreen(
                     WeatherReportError.NoInternet -> {
                         Text(
                             text = stringResource(R.string.no_internet_connection),
+                            textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.titleMedium,
                         )
                     }
@@ -235,18 +240,33 @@ fun WeatherReportScreen(
                     is WeatherReportError.HttpError -> {
                         Text(
                             text = stringResource(R.string.http_error),
+                            textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.titleMedium,
                         )
-                        Text(text = error.message, style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            text = error.message,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = modifier.padding(top = Spacing.small)
+                        )
                     }
 
                     WeatherReportError.LocationUnavailable -> {
                         Text(
                             text = stringResource(R.string.location_error_title),
+                            textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.titleMedium,
                         )
+                        Text(
+                            text = stringResource(R.string.location_error_description),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(
+                                horizontal = Spacing.normal,
+                                vertical = Spacing.small
+                            ),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                         val context = LocalContext.current
-                        TextButton(onClick = {
+                        Button(onClick = {
                             val intent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                                 data = Uri.fromParts("package", context.packageName, null)
                                 addFlags(FLAG_ACTIVITY_NEW_TASK)
@@ -254,6 +274,12 @@ fun WeatherReportScreen(
                             context.startActivity(intent)
                         }) {
                             Text(text = stringResource(R.string.location_error_button))
+                        }
+                        TextButton(onClick = {
+                            val intent = Intent(ACTION_LOCATION_SOURCE_SETTINGS)
+                            context.startActivity(intent)
+                        }) {
+                            Text(text = stringResource(R.string.location_error_settings_button))
                         }
                     }
                 }
