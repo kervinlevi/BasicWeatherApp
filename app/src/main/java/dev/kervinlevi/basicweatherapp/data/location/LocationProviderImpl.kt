@@ -10,7 +10,11 @@ import android.location.Geocoder
 import android.location.LocationManager
 import android.os.Build
 import androidx.core.content.ContextCompat.checkSelfPermission
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import dev.kervinlevi.basicweatherapp.domain.location.LocationProvider
 import dev.kervinlevi.basicweatherapp.domain.model.Location
 import java.util.Locale
@@ -30,11 +34,15 @@ class LocationProviderImpl @Inject constructor(private val context: Context) : L
 
         return suspendCoroutine { coroutine ->
             val locationProviderClient = LocationServices.getFusedLocationProviderClient(context)
-            with(locationProviderClient.lastLocation) {
-                addOnSuccessListener { fuseLocation ->
+            val request =
+                LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000L).build()
+            val locationCallback = object : LocationCallback() {
+                override fun onLocationResult(p0: LocationResult) {
                     val geocoder = Geocoder(context, Locale.getDefault())
+                    val fuseLocation = p0.lastLocation
                     if (fuseLocation == null) {
                         coroutine.resume(null)
+                        removeCallback()
                     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         geocoder.getFromLocation(fuseLocation.latitude,
                             fuseLocation.longitude,
@@ -46,10 +54,12 @@ class LocationProviderImpl @Inject constructor(private val context: Context) : L
                                             fuseLocation, addresses.firstOrNull()
                                         )
                                     )
+                                    removeCallback()
                                 }
 
                                 override fun onError(errorMessage: String?) {
                                     coroutine.resume(getLocation(fuseLocation, null))
+                                    removeCallback()
                                 }
                             })
                     } else {
@@ -57,13 +67,23 @@ class LocationProviderImpl @Inject constructor(private val context: Context) : L
                             fuseLocation.latitude, fuseLocation.longitude, 1
                         )
                         coroutine.resume(getLocation(fuseLocation, addresses?.firstOrNull()))
+                        removeCallback()
                     }
                 }
+
+                private fun removeCallback() {
+                    locationProviderClient.removeLocationUpdates(this)
+                }
+            }
+
+            with(locationProviderClient.requestLocationUpdates(request, locationCallback, null)) {
                 addOnFailureListener {
                     coroutine.resume(null)
+                    locationProviderClient.removeLocationUpdates(locationCallback)
                 }
                 addOnCanceledListener {
                     coroutine.resume(null)
+                    locationProviderClient.removeLocationUpdates(locationCallback)
                 }
             }
         }
